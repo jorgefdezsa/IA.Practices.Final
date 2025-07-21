@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  api.ia:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONFIGURATION: Release
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "8080:8080"   # Mapea el puerto 8080 del contenedor a tu host
+      - "8081:8081"   # Mapea el puerto 8081 del contenedor a tu host
+    depends_on:
+      - redis
+      - eventstore
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  eventstore:
+    image: eventstore/eventstore:latest
+    environment:
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+    ports:
+      - "2113:2113"
+      - "1113:1113"
+
+  sql_database:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    container_name: mssql_server
+    ports:
+            - "1433:1433"
+    environment:
+      SA_PASSWORD: "PON_TU_PASSWORD"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
