@@ -417,3 +417,4 @@ FodyWeavers.xsd
 *.msm
 *.msp
 /API.IA/appsettings.json
+/API.IA/appsettings.Development.json
